@@ -56,6 +56,7 @@ if ($user_id != 0) {
         array_push($dogdata, $userdog);
     }
 
+    
     $response = array(
         "status" => 1,
         "userdata" => $userdata,
