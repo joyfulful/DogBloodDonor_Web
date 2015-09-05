@@ -3,7 +3,6 @@ include "../include/functions.php";
 include "../include/dbcon.inc.php";
 header('Content-Type: application/json');
 $user_id = getUserIdFromToken($con, @$_POST["token"]);
-$request_id = $con->real_escape_string(@$_POST["request_id"]);
 $dog_id = $con->real_escape_string(@$_POST["dog_id"]);
 $response = array();
 
