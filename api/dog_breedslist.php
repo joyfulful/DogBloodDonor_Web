@@ -12,6 +12,5 @@ while ($data = $res->fetch_array()) {
     );
     array_push($dog, $newdog);
 }
-
 echo json_encode($dog);
 ?>

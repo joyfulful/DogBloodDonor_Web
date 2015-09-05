@@ -19,8 +19,4 @@ if ($user_id != 0) {
 }
 echo json_encode($response);
 
-//ส่ง request_id ไปให้บี
-//ส่ง dog_name
-//ส่ง realdonator
-
 ?>
