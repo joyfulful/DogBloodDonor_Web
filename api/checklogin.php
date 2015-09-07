@@ -58,8 +58,10 @@ if ($user_id != 0) {
 
     //Current Request Query
     //find current request_id
-    $findreq = $con->query("SELECT request_id FROM request WHERE request.request_type = 2 AND request_id IN "
-            . "(SELECT request_id FROM donate WHERE donate_status = 0 OR donate_status = 3)");
+    $findreq = $con->query("SELECT request_id FROM request WHERE request.from_user_id = '$user_id'"
+            . " AND request.request_type = 2 AND request.request_id NOT IN "
+            . "(SELECT request_id FROM donate WHERE donate_status = 1 OR donate_status = 2)");
+    echo $con->error;
     $request = array();
     while ($findreqdata = $findreq->fetch_array()) {
         $request_id = $findreqdata[0];
