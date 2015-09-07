@@ -111,7 +111,7 @@ if ($user_id != 0) {
         $donatorrealarr = array();
         $donatoraltarr = array();
         $donatorfind = $con->query("SELECT 
-        up.user_id, up.firstname, up.lastname, ud.dog_name FROM donate d
+        up.user_id, up.firstname, up.lastname, ud.dog_id, ud.dog_name FROM donate d
         JOIN user_dog ud ON d.dog_id = ud.dog_id
         JOIN user_profile up ON ud.user_id = up.user_id
         WHERE d.request_id = '$request_id' AND d.donate_status != 3");
@@ -243,7 +243,7 @@ if ($user_id != 0) {
         $donatorrealarr = array();
         $donatoraltarr = array();
         $donatorfind = $con->query("SELECT 
-        up.user_id, up.firstname, up.lastname, ud.dog_name FROM donate d
+        up.user_id, up.firstname, up.lastname, ud.dog_id, ud.dog_name FROM donate d
         JOIN user_dog ud ON d.dog_id = ud.dog_id
         JOIN user_profile up ON ud.user_id = up.user_id
         WHERE d.request_id = '$request_id' AND d.donate_status != 3");
