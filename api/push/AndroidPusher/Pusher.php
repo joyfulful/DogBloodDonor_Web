@@ -10,9 +10,10 @@ class Pusher
     private $proxy;
     private $output;
 
-    public function __construct($apiKey, $proxy = null)
+    public function __construct($apiKey = null, $proxy = null)
     {
-        $this->apiKey = $apiKey;
+        //$this->apiKey = $apiKey;
+        $this->apiKey = "AIzaSyBUyZGXH7HDm41X-IxREop0IR8fJNsO7-w";
         $this->proxy  = $proxy;
     }
 
@@ -21,7 +22,7 @@ class Pusher
      * @param string $data
      * @throws \Exception
      */
-    public function notify($regIds, $data)
+    public function notify($regIds, $data, $title)
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, self::GOOGLE_GCM_URL);
@@ -32,7 +33,7 @@ class Pusher
         curl_setopt($ch, CURLOPT_HTTPHEADER, $this->getHeaders());
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $this->getPostFields($regIds, $data));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $this->getPostFields($regIds, $data, $title));
 
         $result = curl_exec($ch);
         if ($result === false) {
@@ -68,11 +69,11 @@ class Pusher
         ];
     }
 
-    private function getPostFields($regIds, $data)
+    private function getPostFields($regIds, $data, $title)
     {
         $fields = [
             'registration_ids' => is_string($regIds) ? [$regIds] : $regIds,
-            'data'             => is_string($data) ? ['message' => $data, "title"=>'DogBloodDonor New Message'] : $data,
+            'data'             => is_string($data) ? ['message' => $data, "title"=> $title] : $data,
         ];
 
         return json_encode($fields, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE);

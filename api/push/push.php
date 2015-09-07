@@ -2,9 +2,9 @@
 include "./AndroidPusher/Pusher.php";
 // https://code.google.com/apis/console/
 $apiKey = "AIzaSyBUyZGXH7HDm41X-IxREop0IR8fJNsO7-w";
-$regId = "APA91bFA5nCWDcDVbaUfdG0BsSZ2edAJyc48lzU4fl0e-JE9OJ47A-yZTQDaxjwWLptSVUelEMI_MaQEkZCgz5LjRkQKDNdAUIMUStjE_bMK_CcHf6MPRVaNdMuwdB6Us4qMe0yhei2h";
+$regId = "APA91bFLOeBWmuHKiyLZDFqM7-VzpEAeHMMp04pgHA3lf_VokJ-kRKp1e2VezUGGnUnjhSlMvzHBHClMl2M_a11vvyQwEP_BMhkBnK5z_Ib7omF8qdyFi2m7bqcfjdhtnq5hZEHPIsvY";
 
 $pusher = new AndroidPusher\Pusher($apiKey);
-$pusher->notify($regId, "Chakree : หิวจังงเลยยย");
+$pusher->notify($regId, "ทดสอบ","New Message","ว้ากกก");
 
 print_r($pusher->getOutputAsArray());

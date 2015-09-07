@@ -85,7 +85,7 @@ if ($request_id != 0 & $ses_user_id != 0) {
         }
 
         //check donation is active
-        $findactive = $con->query("SELECT * FROM donate WHERE request_id = '$request_id' AND dog_id = '$dog_id' AND donate_status = 0");
+        $findactive = $con->query("SELECT * FROM donate WHERE dog_id = '$dog_id' AND donate_status = 0");
         if ($findactive->num_rows == 0) {
             //ok
         } else {
