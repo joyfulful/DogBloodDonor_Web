@@ -18,5 +18,4 @@ if ($user_id != 0) {
     }
 }
 echo json_encode($response);
-
 ?>
