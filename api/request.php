@@ -25,6 +25,7 @@ if ($result->num_rows == 0) {
             . "VALUES (null,'$user_id','$dog_id','$symptoms','$place_id','$duedate',2,'',now(),'$volume')");
     if ($con->error == '') {
         $result1 = 2;
+        $request_id = $con->insert_id;
         //push to every user device
         //first ... find bloodtype_id from dog_id
         $findBloodType = $con->query("SELECT user_dog.dog_bloodtype_id, blood_type.bloodtype_name FROM user_dog "
@@ -39,7 +40,7 @@ if ($result->num_rows == 0) {
             $findUsers = $con->query("SELECT user_id FROM user_dog WHERE dog_bloodtype_id = '$bloodtype_id'");
         }
         $pusher = new AndroidPusher\Pusher();
-        $pusher->notify($devid, "มีสุนัขต้องการเลือดหมู่ " . $bloodtype_name . " ด่วน !", "แจ้งเตือนการขอเลือด");
+        $pusher->notify($devid, "มีสุนัขต้องการเลือดหมู่ " . $bloodtype_name . " ด่วน !", "แจ้งเตือนการขอเลือด","newrequest",$request_id);
     } else {
         $result1 = 0;
     }

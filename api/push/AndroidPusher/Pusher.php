@@ -22,7 +22,7 @@ class Pusher
      * @param string $data
      * @throws \Exception
      */
-    public function notify($regIds, $data, $title)
+    public function notify($regIds, $data, $title, $type = null, $typedata = null)
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, self::GOOGLE_GCM_URL);
@@ -33,7 +33,7 @@ class Pusher
         curl_setopt($ch, CURLOPT_HTTPHEADER, $this->getHeaders());
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $this->getPostFields($regIds, $data, $title));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $this->getPostFields($regIds, $data, $title,$type,$typedata));
 
         $result = curl_exec($ch);
         if ($result === false) {
@@ -69,11 +69,11 @@ class Pusher
         ];
     }
 
-    private function getPostFields($regIds, $data, $title)
+    private function getPostFields($regIds, $data, $title,$type,$typedata)
     {
         $fields = [
             'registration_ids' => is_string($regIds) ? [$regIds] : $regIds,
-            'data'             => is_string($data) ? ['message' => $data, "title"=> $title] : $data,
+            'data'             => is_string($data) ? ['message' => $data, "title"=> $title, "type"=>$type, "typedata"=>$typedata] : $data,
         ];
 
         return json_encode($fields, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE);
