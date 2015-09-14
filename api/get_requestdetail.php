@@ -39,6 +39,7 @@ if ($request_id != 0 & $ses_user_id != 0) {
     $userdog = array(
         "dog_id" => $data["dog_id"],
         "dog_name" => $data["dog_name"],
+        "dog_image" => $data ["dog_image"],
         "disease_id" => $data["disease_id"],
         "disease_name" => $data['disease_name'],
         "dog_bloodtype_id" => $data["dog_bloodtype_id"],
