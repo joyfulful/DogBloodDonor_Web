@@ -39,8 +39,15 @@ if ($result->num_rows == 0) {
         } else {
             $findUsers = $con->query("SELECT user_id FROM user_dog WHERE dog_bloodtype_id = '$bloodtype_id'");
         }
-        $pusher = new AndroidPusher\Pusher();
-        $pusher->notify($devid, "มีสุนัขต้องการเลือดหมู่ " . $bloodtype_name . " ด่วน !", "แจ้งเตือนการขอเลือด","newrequest",$request_id);
+        while ($userstopush = $findUsers->fetch_array()) {
+            $user_id = $userstopush[0];
+            $findDevId = $con->query("SELECT * FROM user_deviceid WHERE user_id = '$user_id'");
+            while ($deviddata = $findDevId->fetch_assoc()) {
+                $devid = $deviddata;
+                $pusher = new AndroidPusher\Pusher();
+                $pusher->notify($devid, "มีสุนัขต้องการเลือดหมู่ " . $bloodtype_name . " ด่วน !", "แจ้งเตือนการขอเลือด", "newrequest", $request_id);
+            }
+        }
     } else {
         $result1 = 0;
     }
