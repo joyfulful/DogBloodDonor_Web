@@ -43,7 +43,7 @@ if ($result->num_rows == 0) {
             $user_id = $userstopush[0];
             $findDevId = $con->query("SELECT * FROM user_deviceid WHERE user_id = '$user_id'");
             while ($deviddata = $findDevId->fetch_assoc()) {
-                $devid = $deviddata;
+                $devid = $deviddata["device_id"];
                 $pusher = new AndroidPusher\Pusher();
                 $pusher->notify($devid, "มีสุนัขต้องการเลือดหมู่ " . $bloodtype_name . " ด่วน !", "แจ้งเตือนการขอเลือด", "newrequest", $request_id);
             }

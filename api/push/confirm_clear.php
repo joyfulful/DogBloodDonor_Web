@@ -1,5 +1,4 @@
 <?php
-
 date_default_timezone_set('Asia/Bangkok');
 echo "Running Request Clean up script : " . date('l jS \of F Y h:i:s A') . "\n";
 include "../../include/dbcon.inc.php";
