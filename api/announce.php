@@ -7,14 +7,14 @@ $urgent = array();
 $all = array();
 $byBloodType = array();
 
-$findUrgent = $con->query("SELECT r.request_id, r.from_user_id as user_id, r.created_time, DATE(r.duedate) as duedate, ud.dog_name, db.breeds_name, bt.bloodtype_name,
+$findUrgent = $con->query("SELECT r.request_type, r.request_id, r.from_user_id as user_id, r.created_time, DATE(r.duedate) as duedate, ud.dog_name, db.breeds_name, bt.bloodtype_name,
 	IF(r.duedate <= DATE_SUB(now(),INTERVAL 1 DAY) ,'false','true')
     as isValid
 FROM request r 
 JOIN user_dog ud ON ud.dog_id = r.for_dog_id
 JOIN dog_breeds db ON db.breeds_id = ud.breeds_id
 JOIN blood_type bt ON bt.bloodtype_id = ud.dog_bloodtype_id
-WHERE r.request_type = 2 AND r.request_id NOT IN 
+WHERE  r.request_type = 2 AND r.request_id NOT IN 
 	(SELECT DISTINCT request_id FROM donate d WHERE d.donate_status IN('1','2') AND d.request_id = r.request_id) 
 AND now() >= DATE_SUB(r.duedate, INTERVAL 3 DAY) ORDER BY r.created_time DESC");
 
@@ -22,7 +22,7 @@ while ($urgentdata = $findUrgent->fetch_assoc()) {
     array_push($urgent, $urgentdata);
 }
 
-$findall = $con->query("SELECT r.request_id, r.from_user_id as user_id, r.created_time, DATE(r.duedate) as duedate, ud.dog_name, db.breeds_name, bt.bloodtype_name,
+$findall = $con->query("SELECT r.request_type, r.request_id, r.from_user_id as user_id, r.created_time, DATE(r.duedate) as duedate, ud.dog_name, db.breeds_name, bt.bloodtype_name,
 	IF(r.duedate <= DATE_SUB(now(),INTERVAL 1 DAY) ,'false','true')
     as isValid
 FROM request r 
@@ -49,7 +49,7 @@ while ($alldata = $findall->fetch_assoc()) {
 $findBloodType = $con->query("SELECT * FROM blood_type ORDER BY bloodtype_id ASC");
 while ($bloodtype = $findBloodType->fetch_assoc()) {
     $requestObj = array();
-    $findByBloodType = $con->query("SELECT r.request_id, r.from_user_id as user_id, r.created_time, DATE(r.duedate) as duedate, ud.dog_name, db.breeds_name, bt.bloodtype_name,
+    $findByBloodType = $con->query("SELECT r.request_type, r.request_id, r.from_user_id as user_id, r.created_time, DATE(r.duedate) as duedate, ud.dog_name, db.breeds_name, bt.bloodtype_name,
 	IF(r.duedate <= DATE_SUB(now(),INTERVAL 1 DAY) ,'false','true')
     as isValid
 FROM request r 
