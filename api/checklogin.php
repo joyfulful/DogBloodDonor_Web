@@ -1,5 +1,5 @@
-<?php
-
+<?php  
+ 
 header('Content-Type: application/json');
 include "../include/functions.php";
 include "../include/dbcon.inc.php";
