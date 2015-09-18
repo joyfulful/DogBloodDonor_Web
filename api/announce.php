@@ -14,7 +14,7 @@ FROM request r
 JOIN user_dog ud ON ud.dog_id = r.for_dog_id
 JOIN dog_breeds db ON db.breeds_id = ud.breeds_id
 JOIN blood_type bt ON bt.bloodtype_id = ud.dog_bloodtype_id
-WHERE r.request_type = 2 and r.request_id NOT IN 
+WHERE r.request_type = 2 AND r.request_id NOT IN 
 	(SELECT DISTINCT request_id FROM donate d WHERE d.donate_status IN('1','2') AND d.request_id = r.request_id) 
 AND now() >= DATE_SUB(r.duedate, INTERVAL 3 DAY) ORDER BY r.created_time DESC");
 
@@ -29,21 +29,18 @@ FROM request r
 JOIN user_dog ud ON ud.dog_id = r.for_dog_id
 JOIN dog_breeds db ON db.breeds_id = ud.breeds_id
 JOIN blood_type bt ON bt.bloodtype_id = ud.dog_bloodtype_id
-WHERE r.request_type = 2 and r.request_id NOT IN 
+WHERE r.request_type = 2 AND r.request_id NOT IN 
 	(SELECT DISTINCT request_id FROM donate d WHERE d.donate_status IN('1','2') AND d.request_id = r.request_id)
-    AND r.request_id NOT IN (
+        AND r.request_id NOT IN (
 SELECT r.request_id
 FROM request r 
 JOIN user_dog ud ON ud.dog_id = r.for_dog_id
 JOIN dog_breeds db ON db.breeds_id = ud.breeds_id
 JOIN blood_type bt ON bt.bloodtype_id = ud.dog_bloodtype_id
 WHERE r.request_id NOT IN 
-	(SELECT DISTINCT request_id FROM donate d WHERE d.donate_status IN('1','2') AND d.request_id = r.request_id) 
-AND now() >= DATE_SUB(r.duedate, INTERVAL 3 DAY) ORDER BY r.created_time DESC
-
-
-)
-ORDER BY r.created_time DESC");
+            (SELECT DISTINCT request_id FROM donate d WHERE d.donate_status IN('1','2') AND d.request_id = r.request_id) 
+           AND now() >= DATE_SUB(r.duedate, INTERVAL 3 DAY) ORDER BY r.created_time DESC)
+           ORDER BY r.created_time DESC");
 echo $con->error;
 while ($alldata = $findall->fetch_assoc()) {
     array_push($all, $alldata);
@@ -59,7 +56,7 @@ FROM request r
 JOIN user_dog ud ON ud.dog_id = r.for_dog_id
 JOIN dog_breeds db ON db.breeds_id = ud.breeds_id
 JOIN blood_type bt ON bt.bloodtype_id = ud.dog_bloodtype_id
-WHERE r.request_type = 2 and r.request_id NOT IN 
+WHERE r.request_type = 2 AND r.request_id NOT IN 
 	(SELECT DISTINCT request_id FROM donate d WHERE d.donate_status IN('1','2') AND d.request_id = r.request_id) 
 AND bt.bloodtype_id = '" . $bloodtype["bloodtype_id"] . "'  
 ORDER BY r.created_time DESC");
