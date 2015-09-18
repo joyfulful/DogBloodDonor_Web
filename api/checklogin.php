@@ -134,6 +134,7 @@ if ($user_id != 0) {
         );
         $requestinner = array(
             "request_id" => $data["request_id"],
+            "request_type" => $data["request_type"],
             "requester_dog" => $userdogreq,
             "symptoms" => $data["symptoms"],
             "place" => array(
