@@ -59,7 +59,7 @@ if ($request_id != 0 & $ses_user_id != 0) {
             . "JOIN blood_type bt ON bt.bloodtype_id = ud.dog_bloodtype_id "
             . "JOIN dog_breeds db ON db.breeds_id = ud.breeds_id "
             . "JOIN dog_diseaseblood dd ON dd.disease_id = ud.disease_id "
-            . "WHERE ud.user_id = '$ses_user_id'");
+            . "WHERE ud.user_id = '$ses_user_id' and ud.dog_status = 1 ");
 
     while ($dogdata = $finddogres->fetch_assoc()) {
         $isOk = true;
