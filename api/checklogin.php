@@ -237,7 +237,7 @@ if ($user_id != 0) {
         $currentdonatecount = $countres->num_rows;
         $amount = $requestdata["amount_volume"];
         $needdonator = ceil($amount / 300);
-        $needprepare = ceil($needdonator / 4);
+        $needprepare = ceil($needdonator / 2);
         $totalneed = $needdonator + $needprepare;
 
         //find current donation data
@@ -279,7 +279,7 @@ if ($user_id != 0) {
             $reason = "มีผู้บริจาคตัวสำรอง";
             if ($daydiff <= 0) {
                 $canCancle = false;
-                $reason = "ไม่สามารถยกเลิกก่อนถึงเวลาที่กำหนด 1 วัน";
+                $reason = "ไม่สามารถยกเลิกได้หลังจากวันที่กำหนด";
             }
         } else {
             //no alt donator
@@ -289,12 +289,12 @@ if ($user_id != 0) {
             $okdaydiff = floor((floor($datediff / (60 * 60 * 24))) / 2);
             $currentdaydiff = floor(($duetime - time()) / (60 * 60 * 24));
             $daydiff = $currentdaydiff-$okdaydiff;
-            if ($daydiff<=0) {
+            if ($daydiff > 0) {
                 $canCancle = false;
-                $reason = "ไม่สามารถยกเลิกก่อนถึงเวลาที่กำหนด 1/2 ของเวลาทั้งหมด";
+                $reason = "ไม่สามารถยกเลิกเพราะเลยเวลาที่ระบบกำหนด";
             } else {
-                $canCancle = true;
-                $reason = "ไม่มีผู้ผู้บริจาคตัวสำรอง";
+                $canCancle = false;
+                $reason = "ไม่สามารถยกเลิกได้ เพราะไม่มีผู้บริจาคตัวสำรอง";
             }
         }
 
