@@ -12,8 +12,7 @@ if ($user_id != 0 & isset($_POST["message"])) {
     $queryUser = $con->query("INSERT INTO `pm`(`message_id`, `from_user_id`, `to_user_id`, "
             . "`message`, `message_time`) "
             . "VALUES (null, '$user_id','$to_user_id','$message',now())");
-    
-    $result = 0;
+    $result = 1;
 }
 $response = array(
     "result"=> $result

@@ -1,5 +1,5 @@
-<?php  
- 
+<?php
+
 header('Content-Type: application/json');
 include "../include/functions.php";
 include "../include/dbcon.inc.php";
@@ -283,19 +283,9 @@ if ($user_id != 0) {
             }
         } else {
             //no alt donator
-            $createdtime = strtotime($createddate);
-            $duetime = strtotime($duedate);
-            $datediff = $duetime - $createdtime;
-            $okdaydiff = floor((floor($datediff / (60 * 60 * 24))) / 2);
-            $currentdaydiff = floor(($duetime - time()) / (60 * 60 * 24));
-            $daydiff = $currentdaydiff-$okdaydiff;
-            if ($daydiff > 0) {
-                $canCancle = false;
-                $reason = "ไม่สามารถยกเลิกเพราะเลยเวลาที่ระบบกำหนด";
-            } else {
-                $canCancle = false;
-                $reason = "ไม่สามารถยกเลิกได้ เพราะไม่มีผู้บริจาคตัวสำรอง";
-            }
+            $daydiff = 0;
+            $canCancle = false;
+            $reason = "ไม่สามารถยกเลิกได้ เพราะไม่มีผู้บริจาคตัวสำรอง";
         }
 
         $innerdonate = array(
@@ -303,8 +293,8 @@ if ($user_id != 0) {
             "donator_dog" => $userdogdonate,
             "request" => $requestdata,
             "isCancelable" => $canCancle,
-            "reason"=>$reason,
-            "dayLeftToCancel"=>$daydiff
+            "reason" => $reason,
+            "dayLeftToCancel" => $daydiff
         );
         array_push($donate, $innerdonate);
     }

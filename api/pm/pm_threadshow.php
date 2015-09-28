@@ -15,11 +15,15 @@ while ($user_id_data = $queryUserid->fetch_array()) {
     $queryMessageDetail = $con->query("SELECT * FROM pm WHERE from_user_id = '$thisuser_id' OR to_user_id = '$thisuser_id' ORDER BY message_time DESC LIMIT 1");
     $messagedata = $queryMessageDetail->fetch_array();
     $message_id = $messagedata["message_id"];
-    $checkReadRes = $con->query("SELECT * FROM pm_read WHERE message_id = '$message_id'");
-    if ($checkReadRes->num_rows == 0) {
-        $isRead = false;
-    } else {
+    if ($user_id == $messagedata["from_user_id"]) {
         $isRead = true;
+    } else {
+        $checkReadRes = $con->query("SELECT * FROM pm_read WHERE message_id = '$message_id'");
+        if ($checkReadRes->num_rows == 0) {
+            $isRead = false;
+        } else {
+            $isRead = true;
+        }
     }
     //get user details
     if ($thisuser_id != 0) {
@@ -30,7 +34,7 @@ while ($user_id_data = $queryUserid->fetch_array()) {
         echo $con->error;
         $data = $res->fetch_assoc();
         $userdata = array(
-            "user_id" => $user_id,
+            "user_id" => $thisuser_id,
             "email" => $data["email"],
             "firstname" => $data["fname"],
             "lastname" => $data["lname"],
@@ -46,7 +50,7 @@ while ($user_id_data = $queryUserid->fetch_array()) {
         );
     }
     $currentuser = array(
-        "user_id" => $userdata, //ตรงนี้ต้องแก้เป็น user object
+        "user" => $userdata, //ตรงนี้ต้องแก้เป็น user object
         "last_message_id" => $messagedata["message_id"],
         "last_message" => $messagedata["message"],
         "last_message_time" => $messagedata["message_time"],
