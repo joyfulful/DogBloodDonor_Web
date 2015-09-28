@@ -65,7 +65,7 @@ if ($_POST["isNewDog"] == "1") {
         }
         $res = $con->query("UPDATE `user_dog` SET `breeds_id`='$breeds_id',"
                 . "`dog_name`='$dog_name',`dog_gender`='$dog_gender',`dog_birthyear`='$dog_birthyear',"
-                . "`dog_bloodtype_id`='$bloodtype_id',`disease_id`='$disease_id',`dog_weight`='$dog_weight',`dog_image`=''"
+                . "`dog_bloodtype_id`='$bloodtype_id',`disease_id`='$disease_id',`dog_weight`='$dog_weight'"
                 . " WHERE `dog_id`='$dog_id'");
         if (isset($_FILES["dog_image"])) {
             $target_dir = "dogimage/";
