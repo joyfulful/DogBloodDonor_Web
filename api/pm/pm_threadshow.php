@@ -5,6 +5,9 @@ include "../../include/dbcon.inc.php";
 header('Content-Type: application/json');
 
 $user_id = getUserIdFromToken($con, @$_POST["token"]);
+if($user_id == 0){
+    die();
+}
 //Test : $user_id = '1';
 $messagearr = array();
 $queryUserid = $con->query("SELECT DISTINCT to_user_id FROM pm WHERE from_user_id = '$user_id'
@@ -12,7 +15,9 @@ UNION
 SELECT DISTINCT from_user_id FROM pm WHERE to_user_id = '$user_id'");
 while ($user_id_data = $queryUserid->fetch_array()) {
     $thisuser_id = $user_id_data[0];
-    $queryMessageDetail = $con->query("SELECT * FROM pm WHERE from_user_id = '$thisuser_id' OR to_user_id = '$thisuser_id' ORDER BY message_time DESC LIMIT 1");
+    $queryMessageDetail = $con->query("SELECT * FROM pm WHERE "
+            . "from_user_id = '$thisuser_id' OR to_user_id = '$thisuser_id' "
+            . " ORDER BY message_time DESC LIMIT 1");
     $messagedata = $queryMessageDetail->fetch_array();
     $message_id = $messagedata["message_id"];
     if ($user_id == $messagedata["from_user_id"]) {
