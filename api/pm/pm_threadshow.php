@@ -12,7 +12,11 @@ UNION
 SELECT DISTINCT from_user_id FROM pm WHERE to_user_id = '$user_id'");
 while ($user_id_data = $queryUserid->fetch_array()) {
     $thisuser_id = $user_id_data[0];
-    $queryMessageDetail = $con->query("SELECT * FROM pm WHERE from_user_id = '$thisuser_id' OR to_user_id = '$thisuser_id' ORDER BY message_time DESC LIMIT 1");
+    $queryMessageDetail = $con->query("SELECT * FROM pm WHERE "
+            . "(from_user_id = '$thisuser_id' AND to_user_id = '$user_id') "
+            . "OR "
+            . "(to_user_id = '$thisuser_id' AND from_user_id = '$user_id') "
+            . "ORDER BY message_time DESC LIMIT 1");
     $messagedata = $queryMessageDetail->fetch_array();
     $message_id = $messagedata["message_id"];
     if ($user_id == $messagedata["from_user_id"]) {
