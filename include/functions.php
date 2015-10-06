@@ -57,4 +57,66 @@ function getUserIdFromToken($con, $token) {
     }
 }
 
+function getUserById($user_id, $con){
+    $res = $con->query("SELECT * FROM user WHERE user_id = '$user_id'");
+    if($res->num_rows > 0){
+        return $res->fetch_assoc();
+    }else{
+        return false;
+    }
+}
+
+function getUserProfileById($user_id,$con){
+    $res = $con->query("SELECT * FROM user_profile WHERE user_id = '$user_id'");
+    if($res->num_rows > 0){
+        return $res->fetch_assoc();
+    }else{
+        return false;
+    }
+}
+
+function getUserDogByUserId($user_id,$con){
+    $dogs = array();
+    $res = $con->query("SELECT * FROM user_dog WHERE user_id = '$user_id' AND dog_status = 1");
+    while($data = $res->fetch_assoc()){
+        array_push($dogs,$data);
+    }
+    return $dogs;
+}
+
+function getBloodTypeById($bloodtype_id, $con){
+    $res = $con->query("SELECT * FROM blood_type WHERE bloodtype_id = '$bloodtype_id'");
+    if($res->num_rows > 0){
+        return $res->fetch_assoc();
+    }else{
+        return false;
+    }
+}
+
+function getDiseaseBloodById($dog_diseaseblood, $con){
+    $res = $con->query("SELECT * FROM dog_diseaseblood WHERE disease_id = '$dog_diseaseblood'");
+    if($res->num_rows > 0){
+        return $res->fetch_assoc();
+    }else{
+        return false;
+    }
+}
+
+function getRequestById($request_id,$con){
+    $res = $con->query("SELECT * FROM request WHERE request_id = '$request_id'");
+    if($res->num_rows > 0){
+        return $res->fetch_assoc();
+    }else{
+        return false;
+    }
+}
+
+function getPlaceById($place_id,$con){
+    $res = $con->query("SELECT * FROM place WHERE place_id = '$place_id'");
+    if($res->num_rows > 0){
+        return $res->fetch_assoc();
+    }else{
+        return false;
+    }
+}
 ?>
