@@ -12,9 +12,10 @@ $place_id = $con->real_escape_string($_POST["place_id"]);
 $duedate = $con->real_escape_string($_POST["duedate"]);
 $volume = $con->real_escape_string($_POST["volume"]);
 
-$resultd = $con->query("SELECT * FROM user_dog WHERE dog_id = '$dog_id'");
+$resultd = $con->query("SELECT * FROM user_dog "
+        . "JOIN blood_type ON user_dog.dog_bloodtype_id = blood_type.bloodtype_id WHERE dog_id = '$dog_id'");
 $data = $resultd->fetch_assoc();
-
+$bloodtype_name = $data["bloodtype_name"];
 $bloodtype_id = $data['dog_bloodtype_id'];
 $result = $con->query("SELECT * FROM hospital_bloodstore hb JOIN hospital_dog hd ON hb.hospital_dogid = hd.hospital_dogid "
         . "WHERE hd.bloodtype_id = '$bloodtype_id' and hb.status = 1 and hb.exp_date > now() ORDER BY hb.exp_date ASC");
@@ -52,25 +53,31 @@ if ($result->num_rows == 0) {
         $result1 = 0;
     }
 } else {
-    $data = $result->fetch_assoc();
-    $hospitaluser_id = $data['hospitaluser_id'];
-    $bloodstroe_id = $data['bloodstore_id'];
-    $result = $con->query("SELECT * FROM hospital_user hu JOIN hospital h ON hu.hospital_id=h.hospital_id "
-            . "WHERE hu.hospital_userid = '$hospitaluser_id'");
-    echo $con->error;
-    $data = $result->fetch_assoc();
-    $hospital_id = $data['hospital_id'];
-    $hospital_name = $data['hospital_name'];
-    $hospital_address = $data['hospital_address'];
-    $hospital_phone = $data['hospital_phone'];
-    $hospital_contact = $data['hospital_contact'];
-    $result = $con->query("INSERT INTO `request`(`request_id`, `from_user_id`, `for_dog_id`, `symptoms`, `place_id`, `duedate`, `request_type`, `bloodstore_id`, `created_time`, `amount_volume`) "
-            . "VALUES (null,'$user_id','$dog_id','$symptoms','$place_id','$duedate',1,'$bloodstroe_id',now(),'$volume')");
-    $to_user_id = $user_id;
-    $message = "มีเลือดที่" . $hospital_name . " โทรศัพท์ติดต่อ " . $hospital_phone . " ที่อยู่ " . $hospital_address;
-    $queryUser = $con->query("INSERT INTO `pm`(`message_id`, `from_user_id`, `to_user_id`, "
-            . "`message`, `message_time`) "
-            . "VALUES (null, '0','$to_user_id','$message',now())");
+    $lasthospital_id = 0;
+    while ($data = $result->fetch_assoc()) {
+        $hospitaluser_id = $data['hospitaluser_id'];
+        $bloodstroe_id = $data['bloodstore_id'];
+        $result2 = $con->query("SELECT * FROM hospital_user hu JOIN hospital h ON hu.hospital_id=h.hospital_id "
+                . "WHERE hu.hospital_userid = '$hospitaluser_id'");
+        echo $con->error;
+        $data2 = $result2->fetch_assoc();
+        $hospital_id = $data2['hospital_id'];
+        if($lasthospital_id == $hospital_id){
+            continue;
+        }
+        $lasthospital_id = $hospital_id;
+        $hospital_name = $data2['hospital_name'];
+        $hospital_address = $data2['hospital_address'];
+        $hospital_phone = $data2['hospital_phone'];
+        $hospital_contact = $data2['hospital_contact'];
+        $resultin = $con->query("INSERT INTO `request`(`request_id`, `from_user_id`, `for_dog_id`, `symptoms`, `place_id`, `duedate`, `request_type`, `bloodstore_id`, `created_time`, `amount_volume`) "
+                . "VALUES (null,'$user_id','$dog_id','$symptoms','$place_id','$duedate',1,'$bloodstroe_id',now(),'$volume')");
+        $to_user_id = $user_id;
+        $message = "มีเลือดกรุ๊ป " . $bloodtype_name . " ที่ " . $hospital_name . " โทรศัพท์ติดต่อ " . $hospital_phone . " ที่อยู่ " . $hospital_address;
+        $queryUser = $con->query("INSERT INTO `pm`(`message_id`, `from_user_id`, `to_user_id`, "
+                . "`message`, `message_time`) "
+                . "VALUES (null, '0','$to_user_id','$message',now())");
+    }
     if ($con->error == '') {
         $result1 = 1;
         //push message to user's device (optional if bee didn't handel in-app notification)
