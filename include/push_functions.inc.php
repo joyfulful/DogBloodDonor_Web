@@ -3,11 +3,13 @@
 //Android Push Functions
 function pushToUser($user_id, $title, $message, $type, $typedata, $con) {
     //get api key from https://code.google.com/apis/console/
-    $regIds = getDeviceIdByUserId($user_id, $con);
-    foreach ($regIds as $i => $regId) {
-        $pusher = new Pusher();
-        $pusher->notify($regId, $message, $title, $type, $typedata);
-        pushLog($pusher->getOutputAsArray(), $con, $title, $message, $type, $typedata, $user_id, $regId);
+    if (checkSettings($user_id, $type, $con)) {
+        $regIds = getDeviceIdByUserId($user_id, $con);
+        foreach ($regIds as $i => $regId) {
+            $pusher = new Pusher();
+            $pusher->notify($regId, $message, $title, $type, $typedata);
+            pushLog($pusher->getOutputAsArray(), $con, $title, $message, $type, $typedata, $user_id, $regId);
+        }
     }
 }
 
@@ -55,8 +57,6 @@ function registerDevice($user_id, $device_id, $con) {
 function unRegisterDevice($user_id, $device_id, $con) {
     $con->query("UPDATE user_deviceid SET status = 0 WHERE user_id = '$user_id' AND device_id = '$device_id'");
 }
-
-
 
 class Pusher {
 
@@ -116,6 +116,20 @@ class Pusher {
         return json_encode($fields, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE);
     }
 
+}
+
+function checkSettings($user_id, $type, $con) {
+    $res = $con->query("SELECT * FROM user_settings WHERE user_id = '$user_id' AND type = '$type'");
+    if ($res->num_rows == 0) {
+        return true;
+    } else {
+        $data = $res->fetch_assoc();
+        if ($data["value"] == "1") {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 
 ?>

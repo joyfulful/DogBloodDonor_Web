@@ -1,7 +1,7 @@
 <?php
 
 function sendActivatemail($code, $email) {
-    require_once('../vendor/phpmailer/PHPMailerAutoload.php');
+    require_once('../../vendor/phpmailer/PHPMailerAutoload.php');
     $mail = new PHPMailer();
     $mail->IsSMTP(); // telling the class to use SMTP
     $mail->SMTPDebug = 0;                     // enables SMTP debug information (for testing)
@@ -24,7 +24,7 @@ function sendActivatemail($code, $email) {
 
 
 
-    $mailbody = file_get_contents("../include/email/activatetemplate.html");
+    $mailbody = file_get_contents("../../include/email/activatetemplate.html");
     $bg = "https://dogblooddonor.in.th/include/email/emailbg.jpg";
     $mailbody = str_replace("[[bg]]", $bg, $mailbody);
     $mailbody = str_replace("[[code]]", $code, $mailbody);
@@ -44,7 +44,7 @@ function sendActivatemail($code, $email) {
 }
 
 function sendForgotmail($code, $email) {
-    require_once('../vendor/phpmailer/PHPMailerAutoload.php');
+    require_once('../../vendor/phpmailer/PHPMailerAutoload.php');
     $mail = new PHPMailer();
     $mail->IsSMTP(); // telling the class to use SMTP
     $mail->SMTPDebug = 0;                     // enables SMTP debug information (for testing)
@@ -67,7 +67,7 @@ function sendForgotmail($code, $email) {
 
 
 
-    $mailbody = file_get_contents("../include/email/forgottemplate.html");
+    $mailbody = file_get_contents("../../include/email/forgottemplate.html");
     $bg = "https://dogblooddonor.in.th/include/email/emailbg.jpg";
     $mailbody = str_replace("[[bg]]", $bg, $mailbody);
     $mailbody = str_replace("[[code]]", $code, $mailbody);
