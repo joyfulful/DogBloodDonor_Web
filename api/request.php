@@ -18,7 +18,7 @@ $data = $resultd->fetch_assoc();
 $bloodtype_name = $data["bloodtype_name"];
 $bloodtype_id = $data['dog_bloodtype_id'];
 $result = $con->query("SELECT * FROM hospital_bloodstore hb JOIN hospital_dog hd ON hb.hospital_dogid = hd.hospital_dogid "
-        . "WHERE hd.bloodtype_id = '$bloodtype_id' and hb.status = 1 and hb.exp_date > now() ORDER BY hb.exp_date ASC");
+        . "WHERE hd.bloodtype_id = '$bloodtype_id' and hb.status = 1 and hb.exp_date > now() ORDER BY hb.exp_date ASC ");
 echo $con->error;
 
 if ($result->num_rows == 0) {

@@ -277,7 +277,7 @@ if ($user_id != 0) {
             $daydiff = floor($datediff / (60 * 60 * 24));
             $canCancle = true;
             $reason = "มีผู้บริจาคตัวสำรอง";
-            if ($daydiff <= 0) {
+            if ($daydiff > 0) {
                 $canCancle = false;
                 $reason = "ไม่สามารถยกเลิกได้หลังจากวันที่กำหนด";
             }
