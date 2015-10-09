@@ -1,7 +1,7 @@
 <?php
 function getAllUserSettings($user_id,$con){
     $types = array("request","pm","requester","donator");
-    $types_text = array("ประกาศขอเลือด","ข้อความส่วนตัว","การขอรับเลือด","สถานะผู้บริจาค");
+    $types_text = array("ประกาศขอเลือด","ข้อความส่วนตัว","มีผู้บริจาค","สถานะการบริจาค");
     $settings = array();
     foreach ($types as $i => $type) {
         $setting = array(
