@@ -17,7 +17,7 @@ function getAllUserSettings($user_id,$con){
 function getUserSettings($user_id, $type, $con) {
     $res = $con->query("SELECT * FROM user_settings WHERE user_id = '$user_id' AND type = '$type'");
     if ($res->num_rows == 0) {
-        return 1;
+        return 0;
     } else {
         $data = $res->fetch_assoc();
         if ($data["value"] == "1") {

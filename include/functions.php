@@ -112,6 +112,15 @@ function getDiseaseBloodById($dog_diseaseblood, $con) {
     }
 }
 
+function getBreedsById($breeds_id, $con) {
+    $res = $con->query("SELECT * FROM dog_breeds WHERE breeds_id = '$breeds_id'");
+    if ($res->num_rows > 0) {
+        return $res->fetch_assoc();
+    } else {
+        return false;
+    }
+}
+
 function getRequestById($request_id, $con) {
     $res = $con->query("SELECT * FROM request WHERE request_id = '$request_id'");
     if ($res->num_rows > 0) {
@@ -134,49 +143,152 @@ function getBloodStoreByBloodTypeId($bloodtype_id, $con) {
     $bloodstores = array();
     $res = $con->query("SELECT * FROM hospital_bloodstore hb JOIN hospital_dog hd ON hb.hospital_dogid = hd.hospital_dogid "
             . "WHERE hd.bloodtype_id = '$bloodtype_id' and hb.status = 1 and hb.exp_date > now() ORDER BY hb.exp_date ASC ");
-    while($data = $res->fetch_assoc()){
-        array_push($bloodstores,$data);
+    while ($data = $res->fetch_assoc()) {
+        array_push($bloodstores, $data);
     }
     return $bloodstores;
 }
 
-function getHospitalById($hospital_id,$con){
+function getHospitalById($hospital_id, $con) {
     $hospital = array();
     $res = $con->query("SELECT * FROM hospital WHERE hospital_id = '$hospital_id'");
     echo $con->error;
-    if($res->num_rows > 0){
+    if ($res->num_rows > 0) {
         $data = $res->fetch_assoc();
         $hospital = array(
-            "hospital_id"=>$data["hospital_id"],
-            "hospital_name"=>$data["hospital_name"],
-            "hospital_address"=>$data["hospital_address"],
-            "hospital_phone"=>$data["hospital_phone"],
-            "hospital_contact"=>$data["hospital_contact"]
+            "hospital_id" => $data["hospital_id"],
+            "hospital_name" => $data["hospital_name"],
+            "hospital_address" => $data["hospital_address"],
+            "hospital_phone" => $data["hospital_phone"],
+            "hospital_contact" => $data["hospital_contact"]
         );
     }
     return $hospital;
-    
 }
 
+function getCurrentActiveRequestByUserId($user_id, $con) {
+    $requests = array();
+    $res = $con->query("SELECT * FROM request WHERE request.from_user_id = '$user_id'"
+            . " AND request.request_type = 2 AND request.request_id NOT IN "
+            . "(SELECT request_id FROM donate WHERE donate_status IN (1,2))");
+    while ($data = $res->fetch_assoc()) {
+        array_push($requests, $data);
+    }
+    return $requests;
+}
 
+function getCurrentActiveDonateByRequestId($request_id, $con) {
+    $donates = array();
+    $res = $con->query("SELECT * FROM donate WHERE request_id = '$request_id' AND donate_status IN (0,1,2)");
+    while ($data = $res->fetch_assoc()) {
+        array_push($donates, $data);
+    }
+    return $donates;
+}
 
+function getDonatorByRequestId($request_id, $con) {
+    $donates = array();
+    $res = $con->query("SELECT 
+        up.user_id, up.firstname, up.lastname, ud.dog_id, ud.dog_name FROM donate d
+        JOIN user_dog ud ON d.dog_id = ud.dog_id
+        JOIN user_profile up ON ud.user_id = up.user_id
+        WHERE d.request_id = '$request_id' AND d.donate_status != 3");
+    while ($data = $res->fetch_assoc()) {
+        array_push($donates, $data);
+    }
+    return $donates;
+}
 
+function calculateDonator($amount) {
+    $needdonator = ceil($amount / 300);
+    $needprepare = ceil($needdonator / 4);
+    $data = array(
+        "realdonator" => $needdonator,
+        "extradonator" => $needprepare,
+        "total" => $needdonator + $needprepare
+    );
+    return $data;
+}
 
-$thai_day_arr=array("อาทิตย์","จันทร์","อังคาร","พุธ","พฤหัสบดี","ศุกร์","เสาร์");  
-$thai_month_arr=array(  
-    "0"=>"",  
-    "1"=>"มกราคม",  
-    "2"=>"กุมภาพันธ์",  
-    "3"=>"มีนาคม",  
-    "4"=>"เมษายน",  
-    "5"=>"พฤษภาคม",  
-    "6"=>"มิถุนายน",   
-    "7"=>"กรกฎาคม",  
-    "8"=>"สิงหาคม",  
-    "9"=>"กันยายน",  
-    "10"=>"ตุลาคม",  
-    "11"=>"พฤศจิกายน",  
-    "12"=>"ธันวาคม"                    
-);  
-$thai_month_short_arr = Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
+function sortRealDonator($donators, $donatecalc) {
+    $donatorrealarr = array();
+    $count = 0;
+    foreach ($donators as $key => $donatordata) {
+        if (++$count <= $donatecalc["realdonator"]) {
+            array_push($donatorrealarr, $donatordata);
+        }
+    }
+    return $donatorrealarr;
+}
+
+function sortAltDonator($donators, $donatecalc) {
+    $donatoraltarr = array();
+    $count = 0;
+    foreach ($donators as $key => $donatordata) {
+        if (++$count > $donatecalc["realdonator"]) {
+            array_push($donatoraltarr, $donatordata);
+        }
+    }
+    return $donatoraltarr;
+}
+
+function getCurrentDonateByDogId($dog_id, $con) {
+    $requests = array();
+    $res = $con->query("SELECT * FROM donate WHERE dog_id = '$dog_id' AND donate_status = 0");
+    while ($data = $res->fetch_assoc()) {
+        array_push($requests, $data);
+    }
+    if (sizeof($requests) > 0) {
+        return $requests[0];
+    } else {
+        return $requests;
+    }
+}
+
+function isDogDonatingByDogId($dog_id, $con) {
+    $donate = getCurrentDonateByDogId($dog_id, $con);
+    if (sizeof($donate) > 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function getDonatorStatus($request_id,$dog_id,$con){
+    $request = getRequestById($request_id, $con);
+    $donators = getDonatorByRequestId($request_id, $con);
+    $calc = calculateDonator($request["amount_volume"]);
+    $realdonator = sortRealDonator($donators, $calc);
+    foreach ($realdonator as $key => $real) {
+        if($real["dog_id"] == $dog_id){
+            return "real";
+        }
+    }
+    $altdonator = sortAltDonator($donators, $calc);
+    foreach ($altdonator as $key => $alt) {
+        if($alt["dog_id"] == $dog_id){
+            return "alt";
+        }
+    }
+    return "error";
+}
+
+//thai day month array
+$thai_day_arr = array("อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัสบดี", "ศุกร์", "เสาร์");
+$thai_month_arr = array(
+    "0" => "",
+    "1" => "มกราคม",
+    "2" => "กุมภาพันธ์",
+    "3" => "มีนาคม",
+    "4" => "เมษายน",
+    "5" => "พฤษภาคม",
+    "6" => "มิถุนายน",
+    "7" => "กรกฎาคม",
+    "8" => "สิงหาคม",
+    "9" => "กันยายน",
+    "10" => "ตุลาคม",
+    "11" => "พฤศจิกายน",
+    "12" => "ธันวาคม"
+);
+$thai_month_short_arr = Array("", "ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค.");
 ?>
