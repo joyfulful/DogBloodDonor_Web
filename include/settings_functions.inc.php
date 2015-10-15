@@ -9,7 +9,7 @@ function getAllUserSettings($user_id,$con){
             "type_text"=>$types_text[$i],
             "value"=>  getUserSettings($user_id, $type, $con)
         );
-        array_push($settings,$setting);
+        array_push($settings,$setting);  
     }
     return $settings;
 }
