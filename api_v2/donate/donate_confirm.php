@@ -1,4 +1,5 @@
 <?php
+
 include "../../include/functions.php";
 include "../../include/push_functions.inc.php";
 include "../../include/dbcon.inc.php";
@@ -12,12 +13,15 @@ $res = $con->query("INSERT INTO `donate`(`donate_id`, `request_id`, `dog_id`, `d
 
 $request = getRequestById($request_id, $con);
 $requser_id = $request["from_user_id"];
-pushToUser($requser_id, "แจ้งเตือนการขอเลือด", "มีผู้บริจาคเลือดให้กับสุนัขของคุณ", "requester", $request_id, $con);
+$status = getDonatorStatus($request_id, $dog_id, $con);
+if ($status == "real") {
+    pushToUser($requser_id, "แจ้งเตือนการขอเลือด", "มีผู้บริจาคเลือดให้กับสุนัขของคุณ", "requester", $request_id, $con);
+}
 
-if($con->error == ""){
-    $response = array("result"=>1);
-}else{
-    $response = array("result"=>0);
+if ($con->error == "") {
+    $response = array("result" => 1);
+} else {
+    $response = array("result" => 0);
 }
 echo json_encode($response);
 ?>
