@@ -1,7 +1,7 @@
 <?php
 
-include "../include/functions.php";
-include "../include/dbcon.inc.php";
+include "../../include/functions.php";
+include "../../include/dbcon.inc.php";
 header('Content-Type: application/json');
 $urgent = array();
 $all = array();

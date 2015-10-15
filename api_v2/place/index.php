@@ -70,7 +70,11 @@ foreach ($places["response"]["venues"] as $key => $place) {
         "place_id" => $place_id,
         "name" => $name,
         "distance" => $distance,
-        "address" => $formattedAddress
+        "address" => $formattedAddress,
+        "geolocation" => array(
+            "lat" => $p_lat,
+            "long" => $p_long
+        )
     );
     array_push($jsonresponse, $placeresponse);
 }

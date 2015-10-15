@@ -1,10 +1,19 @@
 <?php
+
 header('Content-Type: application/json');
 include "../../include/dbcon.inc.php";
 include "../../include/functions.php";
 $ses_user_id = getUserIdFromToken($con, @$_POST["token"]);
 $request_id = $con->real_escape_string(@$_POST["request_id"]);
 if ($request_id != 0 & $ses_user_id != 0) {
+
+    //check if request is not closed
+    $checkclose = $con->query("SELECT * FROM donate WHERE request_id = '$request_id' AND donate_status IN('1','2')");
+    if ($checkclose->num_rows > 0) {
+        $status = 2;
+    } else {
+        $status = 1;
+    }
 
     //finduser_id from request
     $finduid = $con->query("SELECT from_user_id FROM request WHERE request_id = '$request_id'");
@@ -127,19 +136,22 @@ if ($request_id != 0 & $ses_user_id != 0) {
             array_push($responseText, "น้ำหนักไม่อยู่ในเกณฑ์การบริจาคเลือด");
         }
 
-        array_push($userdoglist, array(
-            "dog_id" => $dog_id,
-            "bloodtype_name" => $dogdata["bloodtype_name"],
-            "dog_name" => $dogdata["dog_name"],
-            "dog_gender" => $dogdata["dog_gender"],
-            "dog_birthyear" => $dogdata["dog_birthyear"],
-            "dog_weight" => $dogdata["dog_weight"],
-            "dog_image" => $dogdata["dog_image"],
-            "breeds_name" => $dogdata["breeds_name"],
-            "disease_name" => $dogdata["disease_name"],
-            "isOkToDonate" => $isOk,
-            "reasons" => $responseText
-        ));
+        //edit by aj.pichet request, don't display dog which have different bloodtype than requester_dog
+        if (in_array($requestbloodtypeid, array(1,2)) | $currentbloodtypeid == $requestbloodtypeid) {
+            array_push($userdoglist, array(
+                "dog_id" => $dog_id,
+                "bloodtype_name" => $dogdata["bloodtype_name"],
+                "dog_name" => $dogdata["dog_name"],
+                "dog_gender" => $dogdata["dog_gender"],
+                "dog_birthyear" => $dogdata["dog_birthyear"],
+                "dog_weight" => $dogdata["dog_weight"],
+                "dog_image" => $dogdata["dog_image"],
+                "breeds_name" => $dogdata["breeds_name"],
+                "disease_name" => $dogdata["disease_name"],
+                "isOkToDonate" => $isOk,
+                "reasons" => $responseText
+            ));
+        }
     }
 
     //check if this is donateable
@@ -150,7 +162,7 @@ if ($request_id != 0 & $ses_user_id != 0) {
         array_push($donateablereasons, "คุณไม่สามารถบริจาคเลือดให้กับสุนัขของตัวเองได้");
     }
     //count how many people donate to this request
-    $countres = $con->query("SELECT * FROM donate WHERE request_id = '$request_id' AND donate_status = 0");
+    $countres = $con->query("SELECT * FROM donate WHERE request_id = '$request_id' AND donate_status IN(0,1,2)");
     $currentdonatecount = $countres->num_rows;
     $amount = $data["amount_volume"];
     $needdonator = ceil($amount / 300);
@@ -159,6 +171,10 @@ if ($request_id != 0 & $ses_user_id != 0) {
     if ($currentdonatecount >= $totalneed) {
         $donateablestatus = false;
         array_push($donateablereasons, "มีผู้บริจาคเลือดครบตามจำนวนที่ต้องการแล้ว");
+    }
+    if ($status == 2) {
+        $donateablestatus = false;
+        array_push($donateablereasons, "การขอเลือดนี้ได้สิ้นสุดกระบวนการแล้ว");
     }
 
     //find current donation data
@@ -192,7 +208,7 @@ if ($request_id != 0 & $ses_user_id != 0) {
         )
     );
     $response = array(
-        "status" => 1,
+        "status" => $status,
         "requester_userprofile" => $userdata,
         "requester_dog" => $userdog,
         "symptoms" => $data["symptoms"],

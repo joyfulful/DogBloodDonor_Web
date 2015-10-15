@@ -11,6 +11,7 @@ if ($findrequest->num_rows > 0) {
         echo "Clearing Request_id=" . $request_id;
         $con->query("INSERT INTO `donate`(`donate_id`, `request_id`, `dog_id`, `donate_date`, `donate_status`, `donate_lastupdate`) "
                 . "VALUES (null,'$request_id','0',now(),2,now())");
+        $con->query("INSERT INTO `log_request`(`id`, `request_id`, `timelog`) VALUES (null,'$request_id',now())");
         if ($con->error == "") {
             echo " ... Success !\n";
         } else {
