@@ -25,6 +25,13 @@ while ($urgentdata = $findUrgent->fetch_assoc()) {
     $month = $thai_month_short_arr[date("n", $time)];
     $year = date("Y", $time) + 543;
     $urgentdata["duedate"] = $day . " " . $month . " " . $year;
+    $time = strtotime($urgentdata["created_time"]);
+    $day = date("j", $time);
+    $month = $thai_month_short_arr[date("n", $time)];
+    $year = date("Y", $time) + 543;
+    $hr = date("G", $time);
+    $min = date("i", $time);
+    $urgentdata["created_time"] = $day . " " . $month . " " . $year . " " . $hr . "." . $min . " น.";
     array_push($urgent, $urgentdata);
 }
 
@@ -54,6 +61,13 @@ while ($alldata = $findall->fetch_assoc()) {
     $month = $thai_month_short_arr[date("n", $time)];
     $year = date("Y", $time) + 543;
     $alldata["duedate"] = $day . " " . $month . " " . $year;
+    $time = strtotime($alldata["created_time"]);
+    $day = date("j", $time);
+    $month = $thai_month_short_arr[date("n", $time)];
+    $year = date("Y", $time) + 543;
+    $hr = date("G", $time);
+    $min = date("i", $time);
+    $alldata["created_time"] = $day . " " . $month . " " . $year . " " . $hr . "." . $min . " น.";
     array_push($all, $alldata);
 }
 
@@ -78,6 +92,13 @@ ORDER BY r.created_time DESC");
         $month = $thai_month_short_arr[date("n", $time)];
         $year = date("Y", $time) + 543;
         $bybloodtypedata["duedate"] = $day . " " . $month . " " . $year;
+        $time = strtotime($bybloodtypedata["created_time"]);
+        $day = date("j", $time);
+        $month = $thai_month_short_arr[date("n", $time)];
+        $year = date("Y", $time) + 543;
+        $hr = date("G", $time);
+        $min = date("i", $time);
+        $bybloodtypedata["created_time"] = $day . " " . $month . " " . $year . " " . $hr . "." . $min . " น.";
         array_push($requestObj, $bybloodtypedata);
     }
     $bloodtypeobj = array(

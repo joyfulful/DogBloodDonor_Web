@@ -57,7 +57,7 @@ if ($isDonate == 3) {
         if ($statsafter["realdonator"][$statsafter["realneed"] - 1]["dog_id"] == $statsbefore["altdonator"][0]["dog_id"]) {
             $user = getDogById($statsafter["realdonator"][$statsafter["realneed"] - 1]["dog_id"], $con);
             $user_id = $user["user_id"];
-            pushToUser($user_id, "เปลื่ยนสถานะเป็นตัวจริง", "คุณถูกเปลื่ยนเป็นผู้บริจาคตัวจริง (จากเดิมตัวสำรอง)", "donator", $request_id, $con);
+            pushToUser($user_id, "เปลื่ยนสถานะเป็นตัวจริง", "คุณเป็นผู้บริจาคตัวจริง", "donator", $request_id, $con);
         }
     }
 }
