@@ -1,7 +1,7 @@
 <?php
-//jj
-include "../include/functions.php";
-include "../include/dbcon.inc.php";
+
+include "../../include/functions.php";
+include "../../include/dbcon.inc.php";
 header('Content-Type: application/json');
 $user_id = getUserIdFromToken($con, @$_POST["token"]);
 $response = array();
@@ -20,10 +20,10 @@ AND request.request_id NOT IN
      WHERE donate.donate_status != 0)
 AND request.for_dog_id = '$dog_id';");
     echo $con->error;
-    if($check->num_rows == 0){
+    if ($check->num_rows == 0) {
         $isOk = true;
         $reason = "";
-    }else{
+    } else {
         $isOk = false;
         $reason = "ไม่สามารถขอเลือดได้เนื่องจากมีการขอเลือดค้างอยู่";
     }
@@ -35,7 +35,7 @@ AND request.for_dog_id = '$dog_id';");
         "bloodtype_id" => $userdog["bloodtype_id"],
         "bloodtype_name" => $userdog["bloodtype_name"],
         "isOk" => $isOk,
-        "reason"=>$reason
+        "reason" => $reason
     );
     array_push($response, $dog);
 }
