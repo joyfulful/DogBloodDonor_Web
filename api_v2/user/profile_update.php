@@ -1,8 +1,8 @@
 <?php
 
 header('Content-Type: application/json');
-include "../include/functions.php";
-include "../include/dbcon.inc.php";
+include "../../include/functions.php";
+include "../../include/dbcon.inc.php";
 $user_id = getUserIdFromToken($con, @$_POST["token"]);
 if ($user_id != 0) {
     $fname = $con->real_escape_string($_POST["firstname"]);
@@ -13,7 +13,7 @@ if ($user_id != 0) {
     $postcode = $con->real_escape_string($_POST["postcode"]);
     $phone = $con->real_escape_string($_POST["telno"]);
     $district = $con->real_escape_string($_POST["district"]);
-    
+
     $con->query("UPDATE user_profile SET firstname = '$fname', lastname = '$lname', "
             . "house_no = '$house_no',"
             . "subdistrict = '$sub_district',"
@@ -24,7 +24,7 @@ if ($user_id != 0) {
             . " WHERE user_id = $user_id");
     echo $con->error;
     if (isset($_FILES["user_image"])) {
-        $target_dir = "userimage/";
+        $target_dir = "../../api/userimage/";
         $target_file = $target_dir . $user_id . "_" . $_FILES["user_image"]["name"];
         $imageFileType = pathinfo($target_file, PATHINFO_EXTENSION);
         if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif") {
@@ -46,10 +46,10 @@ if ($user_id != 0) {
             "result" => 0
         );
     }
-}else {
-        $response = array(
-            "result" => 0,
-			"error" => "No Token Found"
-        );
-    }
+} else {
+    $response = array(
+        "result" => 0,
+        "error" => "No Token Found"
+    );
+}
 echo json_encode($response);

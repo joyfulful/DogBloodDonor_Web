@@ -1,5 +1,6 @@
 <?php
 
+date_default_timezone_set("Asia/Bangkok");
 include "../../include/functions.php";
 include "../../include/dbcon.inc.php";
 header('Content-Type: application/json');
@@ -19,6 +20,11 @@ WHERE  r.request_type = 2 AND r.request_id NOT IN
 AND now() >= DATE_SUB(r.duedate, INTERVAL 3 DAY) ORDER BY r.created_time DESC");
 
 while ($urgentdata = $findUrgent->fetch_assoc()) {
+    $time = strtotime($urgentdata["duedate"]);
+    $day = date("j", $time);
+    $month = $thai_month_short_arr[date("n", $time)];
+    $year = date("Y", $time) + 543;
+    $urgentdata["duedate"] = $day . " " . $month . " " . $year;
     array_push($urgent, $urgentdata);
 }
 
@@ -43,6 +49,11 @@ WHERE r.request_id NOT IN
            ORDER BY r.created_time DESC");
 echo $con->error;
 while ($alldata = $findall->fetch_assoc()) {
+    $time = strtotime($alldata["duedate"]);
+    $day = date("j", $time);
+    $month = $thai_month_short_arr[date("n", $time)];
+    $year = date("Y", $time) + 543;
+    $alldata["duedate"] = $day . " " . $month . " " . $year;
     array_push($all, $alldata);
 }
 
@@ -62,6 +73,11 @@ AND bt.bloodtype_id = '" . $bloodtype["bloodtype_id"] . "'
 ORDER BY r.created_time DESC");
     echo $con->error;
     while ($bybloodtypedata = $findByBloodType->fetch_assoc()) {
+        $time = strtotime($bybloodtypedata["duedate"]);
+        $day = date("j", $time);
+        $month = $thai_month_short_arr[date("n", $time)];
+        $year = date("Y", $time) + 543;
+        $bybloodtypedata["duedate"] = $day . " " . $month . " " . $year;
         array_push($requestObj, $bybloodtypedata);
     }
     $bloodtypeobj = array(

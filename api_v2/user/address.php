@@ -1,6 +1,6 @@
 <?php
 
-include "../include/dbcon.inc.php";
+include "../../include/dbcon.inc.php";
 header('Content-Type: application/json');
 
 $province_id = $con->real_escape_string(@$_POST["province_id"]);
