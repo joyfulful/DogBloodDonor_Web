@@ -42,7 +42,7 @@ function pushLog($output, $con, $title, $message, $type, $typedata, $user_id, $r
 }
 
 function registerDevice($user_id, $device_id, $con) {
-    $findDevId = $con->query("SELECT * FROM user_deviceid WHERE device_id = '$device_id'");
+    $findDevId = $con->query("SELECT * FROM user_deviceid WHERE device_id = '$device_id' AND user_id = '$user_id'");
     if ($findDevId->num_rows == 0) {
         $con->query("INSERT INTO `user_deviceid`(`id`, `user_id`, `device_id`, `last_update`, `created_at`, `status`) "
                 . "VALUES (null,'$user_id','$device_id',now(),now(),1)");
