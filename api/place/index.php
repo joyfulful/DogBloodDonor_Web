@@ -33,12 +33,13 @@ if ($query == "") {
 } else {
     $finallink.="&query=" . urlencode($query);
 }
+
 $response = file_get_contents($finallink);
 $places = json_decode($response, true);
-
 $jsonresponse = array();
 
 foreach ($places["response"]["venues"] as $key => $place) {
+
     $foursquare_id = $con->real_escape_string($place["id"]);
     $name = $con->real_escape_string($place["name"]);
     $phone = $con->real_escape_string(@$place["contact"]["phone"]);
@@ -52,6 +53,7 @@ foreach ($places["response"]["venues"] as $key => $place) {
     $state = $con->real_escape_string(@$location["state"]);
     $formattedAddress = $con->real_escape_string(implode(" ", @$location["formattedAddress"]));
 
+    
     //check exists in place table
     $res = $con->query("SELECT * FROM place WHERE foursquare_id = '$foursquare_id'");
     if ($res->num_rows == 0) {
@@ -70,6 +72,7 @@ foreach ($places["response"]["venues"] as $key => $place) {
         "place_id" => $place_id,
         "name" => $name,
         "distance" => $distance,
+        "phone"=> str_replace("+66","0",$phone),
         "address" => $formattedAddress,
         "geolocation" => array(
             "lat" => $p_lat,
@@ -78,6 +81,8 @@ foreach ($places["response"]["venues"] as $key => $place) {
     );
     array_push($jsonresponse, $placeresponse);
 }
+
+
 usort($jsonresponse, "distance_compare");
 foreach ($jsonresponse as $key => $value) {
     $distance = $value["distance"];
