@@ -207,6 +207,15 @@ if ($request_id != 0 & $ses_user_id != 0) {
             "current" => $currentdonatecount
         )
     );
+    
+    
+    $time = strtotime($data["duedate"]);
+    $day = date("j", $time);
+    $month = $thai_month_short_arr[date("n", $time)];
+    $year = date("Y", $time) + 543;
+    $data["duedate"] = $day . " " . $month . " " . $year;
+    
+    
     $response = array(
         "status" => $status,
         "requester_userprofile" => $userdata,
