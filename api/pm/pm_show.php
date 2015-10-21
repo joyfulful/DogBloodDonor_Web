@@ -25,11 +25,14 @@ while ($data = $queryUser->fetch_assoc()) {
                 . "VALUES (null,'$message_id',now())");
         }
     }
+    
+    $time = strtotime($data["message_time"]);
+    $timeoutput = date("j",$time)." ".$thai_month_short_arr[date("n",$time)]." , ".date("G:i",$time);
     $message = array(
         "user_id" => $data["from_user_id"],
         "message_id" => $data["message_id"],
         "message" => $data["message"],
-        "message_time" => $data["message_time"]
+        "message_time" => $timeoutput
     );
     array_push($messagearr, $message);
 }
