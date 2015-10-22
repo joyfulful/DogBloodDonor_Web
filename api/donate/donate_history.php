@@ -15,6 +15,9 @@ AND request.request_type = 2
 AND donate.dog_id = '$dog_id'
 ORDER BY donate_date DESC");
    while($data = $res->fetch_assoc()){
+    $time = strtotime($data["donate_date"]);
+    $timeoutput = date("j",$time)." ".$thai_month_short_arr[date("n",$time)]." ".(date("Y", $time)+543)."  ".date("G:i",$time)." น.";
+    $data["donate_date"] = $timeoutput;
     array_push($response,$data);
    }
 }
