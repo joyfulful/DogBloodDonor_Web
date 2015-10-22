@@ -69,6 +69,7 @@ if ($request_id != 0 & $ses_user_id != 0) {
             . "JOIN dog_diseaseblood dd ON dd.disease_id = ud.disease_id "
             . "WHERE ud.user_id = '$ses_user_id' and ud.dog_status = 1 ");
 
+    $haveokdog = false;
     while ($dogdata = $finddogres->fetch_assoc()) {
         $isOk = true;
         $dog_id = $dogdata["dog_id"];
@@ -103,8 +104,8 @@ if ($request_id != 0 & $ses_user_id != 0) {
         }
 
         //check no success donation in past 3 month
-        $findthreem = $con->query("SELECT * FROM donate WHERE request_id = '$request_id' "
-                . "AND dog_id = '$dog_id' AND donate_status = 1 AND donate_date > DATE_SUB(now(), INTERVAL 3 MONTH)");
+        $findthreem = $con->query("SELECT * FROM donate WHERE "
+                . "dog_id = '$dog_id' AND donate_status = 1 AND donate_date > DATE_SUB(now(), INTERVAL 3 MONTH)");
         if ($findthreem->num_rows == 0) {
             //ok
         } else {
@@ -152,6 +153,10 @@ if ($request_id != 0 & $ses_user_id != 0) {
                 "reasons" => $responseText
             ));
         }
+        
+        if($isOk){
+            $haveokdog = true;
+        }
     }
 
     //check if this is donateable
@@ -175,6 +180,12 @@ if ($request_id != 0 & $ses_user_id != 0) {
     if ($status == 2) {
         $donateablestatus = false;
         array_push($donateablereasons, "การขอเลือดนี้ได้สิ้นสุดกระบวนการแล้ว");
+    }
+    
+    //check if user's dog are able to donate
+    if(!$haveokdog){
+        $donateablestatus = false;
+        array_push($donateablereasons, "คุณไม่มีสุนัขที่พร้อมบริจาคเลือดได้ในขณะนี้ เนื่องจากคุณสมบัติไม่ตรงตามที่กำหนด");
     }
 
     //find current donation data
