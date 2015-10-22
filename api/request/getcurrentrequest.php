@@ -44,7 +44,7 @@ if (sizeof($requests) > 0) {
                 "phone" => $place["phone"],
                 "formattedAddress" => $place["formattedAddress"]
             ),
-            "duedate" => $request["duedate"],
+            "duedate" => changeFormatDate($request["duedate"]),
             "amount_volume" => $request["amount_volume"],
             "stats" => $stats
         );

@@ -203,7 +203,7 @@ if ($request_id != 0 & $ses_user_id != 0) {
             "phone" => $data["phone"],
             "formattedAddress" => $data["formattedAddress"],
         ),
-        "duedate" => $data["duedate"],
+        "duedate" => changeFormatDate($data["duedate"]),
         "amount_volume" => $data["amount_volume"],
         "created_time" => $data["created_time"],
         "dog_list" => $userdoglist,

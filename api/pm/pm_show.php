@@ -27,7 +27,7 @@ while ($data = $queryUser->fetch_assoc()) {
     }
     
     $time = strtotime($data["message_time"]);
-    $timeoutput = date("j",$time)." ".$thai_month_short_arr[date("n",$time)]." , ".date("G:i",$time);
+    $timeoutput = date("j",$time)." ".$thai_month_short_arr[date("n",$time)]." ".(date("Y", $time)+543)." , ".date("G:i",$time);
     $message = array(
         "user_id" => $data["from_user_id"],
         "message_id" => $data["message_id"],

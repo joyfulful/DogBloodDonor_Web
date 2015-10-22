@@ -68,11 +68,17 @@ function getThread($user_id, $con) {
         $lastmsg = getLastMessage($user_id, $recipent, $con);
         $userdetail = getUserDetail($recipent, $con);
         $isRead = checkIsRead($user_id, $lastmsg["message_id"], $con);
+        
+        $thai_month_short_arr = Array("", "ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค.");
+
+        $time = strtotime($lastmsg["message_time"]);
+        $timeoutput = date("j", $time) . " " . $thai_month_short_arr[date("n", $time)] . " ".(date("Y", $time)+543)." , " . date("G:i", $time);
         $thread = array(
             "user" => $userdetail,
             "last_message_id" => $lastmsg["message_id"],
             "last_message" => $lastmsg["message"],
-            "last_message_time" => $lastmsg["message_time"],
+            "last_message_time" => $timeoutput,
+            "last_message_realtime" => $lastmsg["message_time"],
             "isRead" => $isRead
         );
         array_push($threads, $thread);
@@ -82,8 +88,8 @@ function getThread($user_id, $con) {
 }
 
 function date_compare($a, $b) {
-    $t1 = strtotime($a['last_message_time']);
-    $t2 = strtotime($b['last_message_time']);
+    $t1 = strtotime($a['last_message_realtime']);
+    $t2 = strtotime($b['last_message_realtime']);
     return $t2 - $t1;
 }
 
@@ -92,10 +98,10 @@ function sendMessage($from_user_id, $to_user_id, $message, $con) {
             . "`message`, `message_time`) "
             . "VALUES (null, '$from_user_id','$to_user_id','$message',now())");
     $user = getUserDetail($from_user_id, $con);
-    pushToUser($to_user_id, "Dog Blood Donor PM", $user["firstname"].": ".$message, "pm", $from_user_id, $con);
-    if($con->error == ""){
+    pushToUser($to_user_id, "Dog Blood Donor PM", $user["firstname"] . ": " . $message, "pm", $from_user_id, $con);
+    if ($con->error == "") {
         return 1;
-    }else{
+    } else {
         return 0;
     }
 }

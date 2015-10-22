@@ -1,5 +1,24 @@
 <?php
 
+//thai day month array
+$thai_day_arr = array("อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัสบดี", "ศุกร์", "เสาร์");
+$thai_month_arr = array(
+    "0" => "",
+    "1" => "มกราคม",
+    "2" => "กุมภาพันธ์",
+    "3" => "มีนาคม",
+    "4" => "เมษายน",
+    "5" => "พฤษภาคม",
+    "6" => "มิถุนายน",
+    "7" => "กรกฎาคม",
+    "8" => "สิงหาคม",
+    "9" => "กันยายน",
+    "10" => "ตุลาคม",
+    "11" => "พฤศจิกายน",
+    "12" => "ธันวาคม"
+);
+$thai_month_short_arr = Array("", "ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค.");
+
 //Function.php แปลง token เป็น user_id
 function crypto_rand_secure($min, $max) {
     $range = $max - $min;
@@ -254,27 +273,28 @@ function isDogDonatingByDogId($dog_id, $con) {
     }
 }
 
-function getDonatorStatus($request_id,$dog_id,$con){
+function getDonatorStatus($request_id, $dog_id, $con) {
     $request = getRequestById($request_id, $con);
     $donators = getDonatorByRequestId($request_id, $con);
     $calc = calculateDonator($request["amount_volume"]);
     $realdonator = sortRealDonator($donators, $calc);
     foreach ($realdonator as $key => $real) {
-        if($real["dog_id"] == $dog_id){
+        if ($real["dog_id"] == $dog_id) {
             return "real";
         }
     }
     $altdonator = sortAltDonator($donators, $calc);
     foreach ($altdonator as $key => $alt) {
-        if($alt["dog_id"] == $dog_id){
+        if ($alt["dog_id"] == $dog_id) {
             return "alt";
         }
     }
     return "error";
 }
 
-
-//thai day month array
+function changeFormatDate($string) {
+    
+    //thai day month array
 $thai_day_arr = array("อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัสบดี", "ศุกร์", "เสาร์");
 $thai_month_arr = array(
     "0" => "",
@@ -292,4 +312,12 @@ $thai_month_arr = array(
     "12" => "ธันวาคม"
 );
 $thai_month_short_arr = Array("", "ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค.");
+
+
+    $time = strtotime($string);
+    $day = date("j", $time);
+    $month = $thai_month_short_arr[date("n", $time)];
+    $year = date("Y", $time) + 543;
+    return $day . " " . $month . " " . $year;
+}
 ?>
