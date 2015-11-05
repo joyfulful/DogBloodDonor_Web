@@ -98,6 +98,9 @@ function sendMessage($from_user_id, $to_user_id, $message, $con) {
             . "`message`, `message_time`) "
             . "VALUES (null, '$from_user_id','$to_user_id','$message',now())");
     $user = getUserDetail($from_user_id, $con);
+    $message = str_replace("<br>","\n",$message);
+    $message = str_replace("<b>","",$message);
+    $message = str_replace("</b>","",$message);
     pushToUser($to_user_id, "Dog Blood Donor PM", $user["firstname"] . ": " . $message, "pm", $from_user_id, $con);
     if ($con->error == "") {
         return 1;
